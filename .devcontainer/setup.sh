@@ -36,6 +36,37 @@ log "Claude Code"
 npm install -g --silent @anthropic-ai/claude-code
 claude --version || true
 
+log "Claude Code talks to the course gateway with the course key, from every shell"
+PROFILE_LINE='export ANTHROPIC_BASE_URL="${LITELLM_BASE_URL:-https://litellm-test.cs.washington.edu}" ANTHROPIC_AUTH_TOKEN="$LITELLM_API_KEY" ANTHROPIC_MODEL="${ANTHROPIC_MODEL:-claude-sonnet-5}"'
+for rc in "$HOME/.bashrc" "$HOME/.zshrc" "$HOME/.profile"; do
+  grep -q 'ANTHROPIC_AUTH_TOKEN' "$rc" 2>/dev/null || echo "$PROFILE_LINE" >> "$rc"
+done
+
+log "Claude Code first-run answers, so the first launch lands on the prompt"
+python3 - <<'PY'
+import json, os, pathlib
+cfg = pathlib.Path.home() / ".claude.json"
+data = {}
+if cfg.exists():
+    try:
+        data = json.loads(cfg.read_text())
+    except json.JSONDecodeError:
+        data = {}
+ws = os.environ.get("CODESPACE_VSCODE_FOLDER") or os.getcwd()
+data.setdefault("hasCompletedOnboarding", True)
+data.setdefault("theme", "dark")
+data.setdefault("shiftEnterKeyBindingInstalled", True)
+data.setdefault("hasAcknowledgedCostThreshold", True)
+proj = data.setdefault("projects", {}).setdefault(ws, {})
+proj.setdefault("hasTrustDialogAccepted", True)
+proj.setdefault("hasCompletedProjectOnboarding", True)
+enabled = proj.setdefault("enabledMcpjsonServers", [])
+if "blender" not in enabled:
+    enabled.append("blender")
+cfg.write_text(json.dumps(data, indent=1))
+print("wrote", cfg, "for", ws)
+PY
+
 log "folders the build writes into"
 mkdir -p scene renders submission record
 

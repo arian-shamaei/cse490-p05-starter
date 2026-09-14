@@ -9,13 +9,18 @@ python3 --version >/dev/null 2>&1 && pass "python $(python3 --version 2>&1 | cut
 command -v uvx >/dev/null 2>&1 && pass "uv $(uvx --version 2>&1 | cut -d' ' -f2)" || fail "uv (rerun: bash .devcontainer/setup.sh)"
 command -v blender >/dev/null 2>&1 && pass "blender $(blender --version 2>/dev/null | head -1 | cut -d' ' -f2)" || fail "blender"
 
+# after a restart Blender takes about a minute to come up; wait for its socket rather than fail
 if python3 - <<'EOF'
-import socket, sys
-s = socket.socket(); s.settimeout(2)
-try:
-    s.connect(("localhost", 9876)); sys.exit(0)
-except Exception:
-    sys.exit(1)
+import socket, sys, time
+for _ in range(90):
+    s = socket.socket(); s.settimeout(1)
+    try:
+        s.connect(("localhost", 9876)); sys.exit(0)
+    except Exception:
+        time.sleep(1)
+    finally:
+        s.close()
+sys.exit(1)
 EOF
 then pass "Blender server listening on localhost:9876"
 else fail "Blender server on 9876 (is the Blender window up? bash .devcontainer/start-blender.sh)"

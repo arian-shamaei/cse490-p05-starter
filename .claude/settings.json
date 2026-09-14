@@ -1,4 +1,9 @@
 {
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://litellm-test.cs.washington.edu",
+    "ANTHROPIC_MODEL": "claude-sonnet-5"
+  },
+  "apiKeyHelper": "/bin/sh -c 'echo \"$LITELLM_API_KEY\"'",
   "permissions": {
     "allow": [],
     "deny": []
@@ -7,7 +12,10 @@
     "SessionStart": [
       {
         "hooks": [
-          { "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR\"/hooks/gate.py --session-start" }
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/hooks/gate.py --session-start"
+          }
         ]
       }
     ],
@@ -15,7 +23,10 @@
       {
         "matcher": "mcp__blender__.*",
         "hooks": [
-          { "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR\"/hooks/gate.py" }
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/hooks/gate.py"
+          }
         ]
       }
     ]
