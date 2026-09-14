@@ -1,0 +1,45 @@
+{
+  "name": "CSE 490 Project 5: Blender over MCP",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "hostRequirements": { "cpus": 2, "memory": "8gb", "storage": "32gb" },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" },
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "password": "noPassword",
+      "webPort": "6080",
+      "vncPort": "5901"
+    }
+  },
+  "forwardPorts": [6080],
+  "portsAttributes": {
+    "6080": { "label": "Blender window", "onAutoForward": "openBrowser" }
+  },
+  "secrets": {
+    "LITELLM_API_KEY": {
+      "description": "Your course key from the course staff. It starts with sk-. Claude Code and your harness both use it."
+    }
+  },
+  "containerEnv": {
+    "LITELLM_BASE_URL": "https://litellm-test.cs.washington.edu",
+    "ANTHROPIC_BASE_URL": "https://litellm-test.cs.washington.edu",
+    "ANTHROPIC_MODEL": "claude-sonnet-5",
+    "BLENDER_MCP_SAFE_MODE": "1",
+    "BLENDER_MCP_DISABLE_TELEMETRY": "true",
+    "LIBGL_ALWAYS_SOFTWARE": "1",
+    "DISPLAY": ":1"
+  },
+  "remoteEnv": {
+    "ANTHROPIC_AUTH_TOKEN": "${containerEnv:LITELLM_API_KEY}",
+    "PATH": "/home/vscode/.local/bin:${containerEnv:PATH}"
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postStartCommand": "bash .devcontainer/start-blender.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": ["anthropic.claude-code", "ms-python.python"]
+    },
+    "codespaces": {
+      "openFiles": ["README.md"]
+    }
+  }
+}

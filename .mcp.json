@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "blender": {
+      "command": "/home/vscode/.local/bin/uvx",
+      "args": ["blender-mcp==1.9.1"],
+      "env": {
+        "BLENDER_MCP_SAFE_MODE": "1",
+        "BLENDER_MCP_DISABLE_TELEMETRY": "true"
+      }
+    }
+  }
+}
