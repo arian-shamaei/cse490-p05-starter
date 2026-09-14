@@ -6,7 +6,8 @@ and a place for your harness. Your laptop stays outside.
 - `bash smoke.sh` tells you whether the codespace is ready.
 - Blender's window opens inside the editor on its own (port 6080). If the panel is blank or asks to
   connect: Ports tab, right-click 6080, Preview in Editor; password vscode.
-- Claude Code is already signed in to the course gateway. Type `claude` and it opens on the prompt.
+- Claude Code lives in the right-hand sidebar, already signed in to the course gateway. The terminal
+  below is for your harness.
 - `fixtures/` holds the lecture's pelican prompt and your scene brief.
 - `harness/` is where your week-three harness goes; `harness/MCP_SPEC.md` is what
   you hand Claude Code.

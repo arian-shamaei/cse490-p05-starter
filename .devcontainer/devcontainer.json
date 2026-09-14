@@ -1,19 +1,34 @@
 {
   "name": "CSE 490 Project 5: Blender over MCP",
-  "build": { "dockerfile": "Dockerfile" },
-  "hostRequirements": { "cpus": 2, "memory": "8gb", "storage": "32gb" },
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
   "features": {
-    "ghcr.io/devcontainers/features/python:1": { "version": "3.12" },
-    "ghcr.io/devcontainers/features/node:1": { "version": "22" },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    },
     "ghcr.io/devcontainers/features/desktop-lite:1": {
       "password": "vscode",
       "webPort": "6080",
       "vncPort": "5901"
     }
   },
-  "forwardPorts": [6080],
+  "forwardPorts": [
+    6080
+  ],
   "portsAttributes": {
-    "6080": { "label": "Blender window", "onAutoForward": "openPreview" }
+    "6080": {
+      "label": "Blender window",
+      "onAutoForward": "openPreview"
+    }
   },
   "secrets": {
     "LITELLM_API_KEY": {
@@ -38,10 +53,34 @@
   "postStartCommand": "bash .devcontainer/start-blender.sh",
   "customizations": {
     "vscode": {
-      "extensions": ["anthropic.claude-code", "ms-python.python"]
+      "extensions": [
+        "anthropic.claude-code",
+        "ms-python.python"
+      ],
+      "settings": {
+        "claudeCode.preferredLocation": "sidebar",
+        "claudeCode.disableLoginPrompt": true,
+        "claudeCode.hideOnboarding": true,
+        "claudeCode.initialPermissionMode": "default",
+        "claudeCode.environmentVariables": [
+          {
+            "name": "ANTHROPIC_BASE_URL",
+            "value": "https://litellm-test.cs.washington.edu"
+          },
+          {
+            "name": "ANTHROPIC_MODEL",
+            "value": "claude-sonnet-5"
+          }
+        ],
+        "chat.disableAIFeatures": true,
+        "workbench.secondarySideBar.defaultVisibility": "visible",
+        "workbench.startupEditor": "none"
+      }
     },
     "codespaces": {
-      "openFiles": ["README.md"]
+      "openFiles": [
+        "README.md"
+      ]
     }
   }
 }

@@ -1,0 +1,16 @@
+{
+  "claudeCode.preferredLocation": "sidebar",
+  "claudeCode.disableLoginPrompt": true,
+  "claudeCode.hideOnboarding": true,
+  "claudeCode.initialPermissionMode": "default",
+  "claudeCode.environmentVariables": [
+    {
+      "name": "ANTHROPIC_BASE_URL",
+      "value": "https://litellm-test.cs.washington.edu"
+    },
+    {
+      "name": "ANTHROPIC_MODEL",
+      "value": "claude-sonnet-5"
+    }
+  ]
+}
