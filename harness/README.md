@@ -1,7 +1,8 @@
 # Your harness goes here
 
-1. Copy your `harness.py` from Project 3 into this folder.
-2. Hand Claude Code `MCP_SPEC.md` and `harness.py` and let it do the wiring.
-3. Run your harness and ask for a red torus on top of the cube. Watch Blender: shape, colour, position.
+1. The wizard copied your `harness.py` from Project 3 into this folder. It stays as it is.
+2. Ask Claude Code to read `MCP_SPEC.md` and build `harness_mcp.py`, a copy of your harness
+   with the Blender connection added. It writes the code; your original is untouched.
+3. Run `harness_mcp.py` in the terminal and ask for a torus. Watch Blender.
 
-The trace your harness writes (`trace.jsonl`) is part of your submission.
+Both files and the trace your new harness writes (`trace.jsonl`) go in your submission.

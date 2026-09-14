@@ -3,6 +3,10 @@
 Hand this file to Claude Code together with your `harness.py` from Project 3.
 It describes what the harness must do afterward. Claude Code writes the code.
 
+Work on a copy: leave `harness/harness.py` exactly as it came from Project 3, copy it
+to `harness/harness_mcp.py`, and make every change below in the copy. The student
+keeps the original to compare against, and the grader reads the difference.
+
 ## What changes
 
 The harness keeps its shape from week three: assemble context, call the model,

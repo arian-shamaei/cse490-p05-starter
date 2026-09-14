@@ -12,8 +12,8 @@ the wizard connects the two. Your laptop runs nothing else.
 - Claude Code lives in the right-hand sidebar, already signed in to the course gateway. The terminal
   below is for your harness.
 - `fixtures/` holds the lecture's pelican prompt and your scene brief.
-- `harness/` is where your week-three harness goes; `harness/MCP_SPEC.md` is what
-  you hand Claude Code.
+- `harness/` holds your week-three harness, untouched, and `harness_mcp.py`, the copy Claude Code
+  builds from `harness/MCP_SPEC.md` with the Blender connection added.
 - `RULES.md` names the rules surface: `.claude/settings.json` and `hooks/gate.py`.
 - Your scene, frames and video live in `ride/`; `ride/progress/` fills with one still per script
   your agent runs, and the checker joins them into a timelapse.

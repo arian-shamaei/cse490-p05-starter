@@ -27,7 +27,8 @@ SCENE = "ride/ride.blend"
 RENDER = "ride/ride.mp4"
 TRAIL = "trail.jsonl"
 HARNESS_TRACE = "harness/trace.jsonl"
-HARNESS_CODE = "harness/harness.py"
+HARNESS_CODE = "harness/harness_mcp.py"
+HARNESS_ORIGINAL = "harness/harness.py"
 SETTINGS = ".claude/settings.json"
 MCP_CONFIG = ".mcp.json"
 HOOK = "hooks/gate.py"
@@ -242,7 +243,7 @@ def main():
 
     # --- secrets
     leak = []
-    for path in [SETTINGS, MCP_CONFIG, HOOK, HARNESS_CODE, HARNESS_TRACE, TRAIL, "AGENTS.md", "CLAUDE.md"]:
+    for path in [SETTINGS, MCP_CONFIG, HOOK, HARNESS_CODE, HARNESS_ORIGINAL, HARNESS_TRACE, TRAIL, "AGENTS.md", "CLAUDE.md"]:
         if os.path.exists(path) and SECRET.search(open(path, encoding="utf-8", errors="ignore").read()):
             leak.append(path)
     check("No key or password in anything you submit", not leak, ", ".join(leak))
@@ -251,7 +252,7 @@ def main():
     assemble_timelapse()
     os.makedirs(BUNDLE_DIR, exist_ok=True)
     transcript = latest_transcript()
-    files = [SCENE, RENDER, TRAIL, HARNESS_TRACE, HARNESS_CODE, SETTINGS, MCP_CONFIG, HOOK, TIMELAPSE]
+    files = [SCENE, RENDER, TRAIL, HARNESS_TRACE, HARNESS_CODE, HARNESS_ORIGINAL, SETTINGS, MCP_CONFIG, HOOK, TIMELAPSE]
     manifest = {
         "written": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
         "workspace": ROOT,
