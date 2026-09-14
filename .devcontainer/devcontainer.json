@@ -1,8 +1,6 @@
 {
   "name": "CSE 490 Project 5: Blender over MCP",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
+  "image": "ghcr.io/arian-shamaei/cse490-p05-blender:latest",
   "hostRequirements": {
     "cpus": 2,
     "memory": "8gb",
