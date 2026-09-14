@@ -1,7 +1,8 @@
 # Project 5 starter
 
 Everything for the build lives in this codespace: Blender, its server, Claude Code,
-and a place for your harness. Your laptop stays outside.
+and a place for your harness. You work in it through the same VS Code as week three;
+the wizard connects the two. Your laptop runs nothing else.
 
 - `bash smoke.sh` tells you whether the codespace is ready.
 - Every open arranges the screen: Blender's live view (`viewport.png`, redrawn every two seconds)
