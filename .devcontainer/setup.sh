@@ -70,7 +70,6 @@ data.setdefault("theme", "dark")
 data.setdefault("shiftEnterKeyBindingInstalled", True)
 data.setdefault("hasAcknowledgedCostThreshold", True)
 proj = data.setdefault("projects", {}).setdefault(ws, {})
-proj.setdefault("hasTrustDialogAccepted", True)
 proj.setdefault("hasCompletedProjectOnboarding", True)
 enabled = proj.setdefault("enabledMcpjsonServers", [])
 if "blender" not in enabled:
@@ -89,6 +88,6 @@ for d in /usr/local/novnc/noVNC-*; do
 done
 
 log "folders the build writes into"
-mkdir -p scene renders submission record
+mkdir -p ride ride/frames submission record
 
 log "done. Blender's window starts on every codespace start (start-blender.sh)."

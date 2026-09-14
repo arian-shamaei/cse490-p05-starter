@@ -15,6 +15,7 @@ the wizard connects the two. Your laptop runs nothing else.
 - `harness/` is where your week-three harness goes; `harness/MCP_SPEC.md` is what
   you hand Claude Code.
 - `RULES.md` names the rules surface: `.claude/settings.json` and `hooks/gate.py`.
+- Your scene, frames and video live in `ride/`.
 - `python3 checker.py` tells you which promises hold, and writes your submission
   bundle to `submission/`.
 

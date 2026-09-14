@@ -20,11 +20,11 @@ student's brief for the scene and the setting they chose.
 
 ## Files, all inside this workspace
 
-- Scene: save to `scene/ride.blend` (relative to the workspace root; get the
+- Scene: save to `ride/ride.blend` (relative to the workspace root; get the
   root from the `CLAUDE_PROJECT_DIR` environment variable or the current
   directory).
 - Render: engine `BLENDER_WORKBENCH`, resolution 640 x 360, output as PNG frames
-  into `renders/frames/` (file path `renders/frames/f_####`). Render the full frame
+  into `ride/frames/` (file path `ride/frames/f_####`). Render the full frame
   range. This Blender build has no video encoder; the checker assembles the video.
 - Nothing is written anywhere else: not `/tmp`, not the home directory. `viewport.png` is the
   student's live view, written by the container; never write or delete it.

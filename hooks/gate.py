@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Your hook: the second gate on the Blender server.
+"""Your gate, for both clients: Claude Code runs it as a hook, and your harness imports
+`offends` from this file and calls it before every server call.
 
 Claude Code runs this before every call to a Blender tool (PreToolUse, see
 .claude/settings.json). It reads one JSON object on stdin describing the call,

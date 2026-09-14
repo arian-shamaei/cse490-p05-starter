@@ -32,16 +32,14 @@ tool dict.
 
 ## The gate stays in front of every call
 
-The week-three gate runs before any tool call, server tools included. Extend it
-so that it refuses, before the call is made:
-
-1. any of the server's download or generation tools, and
-2. any `execute_blender_code` script that switches on or calls a download
-   integration (Poly Haven, Sketchfab, Hyper3D) or that saves, exports, or
-   renders to a path outside the workspace.
-
-A refusal is a normal tool result that says why; the model reads it and moves on.
-The forbidden-tool names are listed in `RULES.md`.
+The week-three gate runs before any tool call, server tools included. It
+checks a file path, and the server's tools carry none, so as written it refuses
+every one of them. Replace its decision with the one the student wrote in
+`hooks/gate.py`: import `offends` from that file and call it with the tool's
+name and arguments before every server call; a non-empty return is the refusal
+reason. The same function is the hook Claude Code runs, so both clients obey
+one rule. A refusal is a normal tool result that says why; the model reads it
+and moves on. The forbidden-tool names are listed in `RULES.md`.
 
 ## The trace
 

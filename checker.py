@@ -23,8 +23,8 @@ import zipfile
 ROOT = os.path.abspath(os.path.dirname(__file__))
 os.chdir(ROOT)
 
-SCENE = "scene/ride.blend"
-RENDER = "renders/ride.mp4"
+SCENE = "ride/ride.blend"
+RENDER = "ride/ride.mp4"
 TRAIL = "trail.jsonl"
 HARNESS_TRACE = "harness/trace.jsonl"
 HARNESS_CODE = "harness/harness.py"
@@ -96,7 +96,7 @@ def blend_probe():
     return None, "Blender ran but the probe printed nothing"
 
 
-FRAMES = "renders/frames"
+FRAMES = "ride/frames"
 
 
 def assemble_video():
