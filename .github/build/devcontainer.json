@@ -1,7 +1,7 @@
 {
   "name": "CSE 490 Project 5 image build",
   "build": {
-    "dockerfile": "../Dockerfile",
+    "dockerfile": "../../.devcontainer/Dockerfile",
     "context": "../.."
   },
   "features": {

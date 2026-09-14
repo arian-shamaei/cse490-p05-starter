@@ -10,7 +10,7 @@ on:
     branches: [main]
     paths:
       - ".devcontainer/Dockerfile"
-      - ".devcontainer/build/devcontainer.json"
+      - ".github/build/devcontainer.json"
       - ".github/workflows/image.yml"
       - "requirements.txt"
   workflow_dispatch:
@@ -32,7 +32,7 @@ jobs:
       - name: build the dev container with its features and push it
         uses: devcontainers/ci@v0.3
         with:
-          configFile: .devcontainer/build/devcontainer.json
+          configFile: .github/build/devcontainer.json
           imageName: ghcr.io/${{ github.repository_owner }}/cse490-p05-blender
           imageTag: latest
           push: always
