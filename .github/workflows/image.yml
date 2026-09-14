@@ -1,0 +1,42 @@
+# Build the Project 5 container image once, whenever the recipe changes, and publish it
+# to GitHub's container registry. The dev container then starts from this image instead
+# of building Blender's layers for every new codespace, which is the slow part of a cold
+# start (7 to 11 minutes measured; the pull of a built image is a fraction of that).
+name: container image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".devcontainer/Dockerfile"
+      - ".github/workflows/image.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .devcontainer
+          file: .devcontainer/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/cse490-p05-blender:latest
+            ghcr.io/${{ github.repository_owner }}/cse490-p05-blender:${{ github.sha }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.description=CSE 490 Project 5: Blender 5.2 LTS on Ubuntu 24.04 for a codespace
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
