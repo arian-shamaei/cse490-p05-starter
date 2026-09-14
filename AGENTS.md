@@ -20,9 +20,11 @@ student's brief for the scene and the setting they chose.
 
 ## Files, all inside this workspace
 
-- Scene: save to `ride/ride.blend` (relative to the workspace root; get the
-  root from the `CLAUDE_PROJECT_DIR` environment variable or the current
-  directory).
+- Every path you hand Blender is absolute. Blender resolves a relative path against
+  its own working directory, not this workspace, and says nothing when frames land
+  elsewhere. Build paths from the workspace root (the `CLAUDE_PROJECT_DIR`
+  environment variable, else the current directory).
+- Scene: save to `ride/ride.blend` under that root.
 - Render: engine `BLENDER_WORKBENCH`, resolution 640 x 360, output as PNG frames
   into `ride/frames/` (file path `ride/frames/f_####`). Render the full frame
   range. This Blender build has no video encoder; the checker assembles the video.
