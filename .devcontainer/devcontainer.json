@@ -80,10 +80,7 @@
         "workbench.startupEditor": "none"
       }
     },
-    "codespaces": {
-      "openFiles": [
-        "viewport.png"
-      ]
-    }
-  }
+    "codespaces": {}
+  },
+  "postAttachCommand": "code --install-extension .devcontainer/cse490-workspace.vsix --force >/tmp/workspace-ext.log 2>&1 || true"
 }
