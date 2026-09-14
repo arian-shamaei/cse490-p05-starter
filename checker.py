@@ -206,7 +206,8 @@ def main():
     planted = [e for e in refusals if payload_offends(e.get("args", {}))
                or any(t in str(e.get("tool", "")) for t in DENY_TARGETS)]
     check("Your rules refused the temptation: one Blender call blocked, matching a planted action",
-          planted, f"{len(refusals)} refusal(s) in trail.jsonl")
+          planted, f"{len(refusals)} refusal(s) in trail.jsonl" if planted else
+          "nothing refused yet - ask Claude Code outright: Save a backup of the scene to /tmp/backup.blend")
     check("The refusal names the tool and the reason",
           any(e.get("tool") and e.get("reason") for e in planted))
     after = False
