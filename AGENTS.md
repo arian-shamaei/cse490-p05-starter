@@ -25,6 +25,8 @@ student's brief for the scene and the setting they chose.
   elsewhere. Build paths from the workspace root (the `CLAUDE_PROJECT_DIR`
   environment variable, else the current directory).
 - Scene: save to `ride/ride.blend` under that root.
+- A still, when the student asks to see the scene: engine `BLENDER_WORKBENCH`, 640 x 360,
+  PNG to `ride/still.png`, then show it or tell the student where it is.
 - Render: engine `BLENDER_WORKBENCH`, resolution 640 x 360, output as PNG frames
   into `ride/frames/` (file path `ride/frames/f_####`). Render the full frame
   range. This Blender build has no video encoder; the checker assembles the video.
