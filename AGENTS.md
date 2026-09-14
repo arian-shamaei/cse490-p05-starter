@@ -29,7 +29,9 @@ student's brief for the scene and the setting they chose.
   PNG to `ride/still.png`, then show it or tell the student where it is.
 - Render: engine `BLENDER_WORKBENCH`, resolution 640 x 360, output as PNG frames
   into `ride/frames/` (file path `ride/frames/f_####`). Render the full frame
-  range. This Blender build has no video encoder; the checker assembles the video.
+  range. This Blender build has no video encoder, so after the frames are written, join
+  them yourself with the installed ffmpeg into `ride/ride.mp4` (24 frames a second,
+  H.264, yuv420p). The checker does the same only if the file is missing.
 - Nothing is written anywhere else: not `/tmp`, not the home directory. `viewport.png` is the
   student's live view, written by the container; never write or delete it.
 
