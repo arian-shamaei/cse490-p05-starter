@@ -76,6 +76,15 @@ cfg.write_text(json.dumps(data, indent=1))
 print("wrote", cfg, "for", ws)
 PY
 
+log "the Blender window connects by itself at the port's bare address"
+# The desktop feature serves noVNC; its front page is a connect form. The editor's auto-preview
+# opens the bare address, so that page becomes a redirect to the auto-connecting one.
+for d in /usr/local/novnc/noVNC-*; do
+  [ -d "$d" ] || continue
+  printf '%s' '<!doctype html><meta http-equiv="refresh" content="0; url=vnc.html?autoconnect=true&resize=scale&password=vscode"><title>Blender window</title>' \
+    | sudo tee "$d/index.html" >/dev/null && echo "auto-connect page in $d"
+done
+
 log "folders the build writes into"
 mkdir -p scene renders submission record
 
