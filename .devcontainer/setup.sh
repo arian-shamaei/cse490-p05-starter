@@ -36,8 +36,17 @@ log "Claude Code"
 npm install -g --silent @anthropic-ai/claude-code
 claude --version || true
 
+log "the course key, kept private inside the container for shells the secret does not reach"
+# Codespaces hands secrets to the editor's terminal and to this setup step, but not to an
+# SSH session (instructor play-test, 2026-09-12). A copy under the home folder, readable by
+# this user only, lets every shell find it.
+if [ -n "${LITELLM_API_KEY:-}" ]; then
+  mkdir -p "$HOME/.config/cse490" && chmod 700 "$HOME/.config/cse490"
+  printf '%s' "$LITELLM_API_KEY" > "$HOME/.config/cse490/key" && chmod 600 "$HOME/.config/cse490/key"
+fi
+
 log "Claude Code talks to the course gateway with the course key, from every shell"
-PROFILE_LINE='export ANTHROPIC_BASE_URL="${LITELLM_BASE_URL:-https://litellm-test.cs.washington.edu}" ANTHROPIC_AUTH_TOKEN="$LITELLM_API_KEY" ANTHROPIC_MODEL="${ANTHROPIC_MODEL:-claude-sonnet-5}"'
+PROFILE_LINE='[ -z "${LITELLM_API_KEY:-}" ] && [ -r "$HOME/.config/cse490/key" ] && export LITELLM_API_KEY="$(cat "$HOME/.config/cse490/key")"; export ANTHROPIC_BASE_URL="${LITELLM_BASE_URL:-https://litellm-test.cs.washington.edu}" ANTHROPIC_AUTH_TOKEN="$LITELLM_API_KEY" ANTHROPIC_MODEL="${ANTHROPIC_MODEL:-claude-sonnet-5}"'
 for rc in "$HOME/.bashrc" "$HOME/.zshrc" "$HOME/.profile"; do
   grep -q 'ANTHROPIC_AUTH_TOKEN' "$rc" 2>/dev/null || echo "$PROFILE_LINE" >> "$rc"
 done

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Six checks that the codespace is ready for the build. Run: bash smoke.sh
 export PATH="$HOME/.local/bin:$PATH"
+# an SSH session does not receive Codespaces secrets; the setup step kept a private copy
+[ -z "${LITELLM_API_KEY:-}" ] && [ -r "$HOME/.config/cse490/key" ] && export LITELLM_API_KEY="$(cat "$HOME/.config/cse490/key")"
 ok=0; bad=0
 pass() { echo "OK      $*"; ok=$((ok+1)); }
 fail() { echo "MISSING $*"; bad=$((bad+1)); }
