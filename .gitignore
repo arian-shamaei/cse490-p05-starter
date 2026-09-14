@@ -5,3 +5,5 @@ submission/
 ride/*.blend1
 viewport.png
 .viewport.tmp.png
+ride/progress/
+ride/progress.mp4

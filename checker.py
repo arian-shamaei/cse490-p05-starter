@@ -117,6 +117,24 @@ def assemble_video():
                        capture_output=True, text=True)
 
 
+PROGRESS = "ride/progress"
+TIMELAPSE = "ride/progress.mp4"
+
+
+def assemble_timelapse():
+    """The build's history: the progress stills, four a second, into ride/progress.mp4."""
+    stills = sorted(glob.glob(os.path.join(PROGRESS, "*.png")))
+    ffmpeg = shutil.which("ffmpeg")
+    if len(stills) < 2 or not ffmpeg:
+        return
+    newest = max(os.path.getmtime(f) for f in stills)
+    if os.path.exists(TIMELAPSE) and os.path.getmtime(TIMELAPSE) >= newest:
+        return
+    subprocess.run([ffmpeg, "-y", "-loglevel", "error", "-framerate", "4", "-pattern_type", "glob",
+                    "-i", os.path.join(PROGRESS, "*.png"), "-c:v", "libx264", "-pix_fmt", "yuv420p", TIMELAPSE],
+                   capture_output=True, text=True)
+
+
 def video_seconds(path):
     ffprobe = shutil.which("ffprobe")
     if not ffprobe or not os.path.exists(path):
@@ -230,9 +248,10 @@ def main():
     check("No key or password in anything you submit", not leak, ", ".join(leak))
 
     # --- bundle
+    assemble_timelapse()
     os.makedirs(BUNDLE_DIR, exist_ok=True)
     transcript = latest_transcript()
-    files = [SCENE, RENDER, TRAIL, HARNESS_TRACE, HARNESS_CODE, SETTINGS, MCP_CONFIG, HOOK]
+    files = [SCENE, RENDER, TRAIL, HARNESS_TRACE, HARNESS_CODE, SETTINGS, MCP_CONFIG, HOOK, TIMELAPSE]
     manifest = {
         "written": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
         "workspace": ROOT,

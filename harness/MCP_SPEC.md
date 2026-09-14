@@ -52,6 +52,10 @@ week three. New event kinds:
 
 ## Settings that save you time
 
+- The harness's model this week is `openrouter/deepseek-v4-flash-0731` through the
+  course gateway, in place of week three's. The harness re-sends the whole conversation
+  every turn, and this model costs about a hundredth of the others per turn; it places
+  a torus as well as any of them. Claude Code keeps its own model.
 - Ask the gateway for up to 8192 output tokens per reply. The default cuts a
   long Blender script in half.
 - Retry a call once on an HTTP 502; the gateway drops single replies that run
