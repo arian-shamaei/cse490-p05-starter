@@ -25,7 +25,8 @@ student's brief for the scene and the setting they chose.
   directory).
 - Render: engine `BLENDER_WORKBENCH`, resolution 640 x 360, output as an MP4
   (FFmpeg container, H.264) to `renders/ride.mp4`. Render the full frame range.
-- Nothing is written anywhere else: not `/tmp`, not the home directory.
+- Nothing is written anywhere else: not `/tmp`, not the home directory. `viewport.png` is the
+  student's live view, written by the container; never write or delete it.
 
 ## What the student submits from your work
 

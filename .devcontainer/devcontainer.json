@@ -29,8 +29,8 @@
   ],
   "portsAttributes": {
     "6080": {
-      "label": "Blender window",
-      "onAutoForward": "openPreview"
+      "label": "Blender desktop (fallback)",
+      "onAutoForward": "silent"
     }
   },
   "secrets": {
@@ -80,6 +80,10 @@
         "workbench.startupEditor": "none"
       }
     },
-    "codespaces": {}
+    "codespaces": {
+      "openFiles": [
+        "viewport.png"
+      ]
+    }
   }
 }

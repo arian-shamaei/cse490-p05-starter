@@ -4,8 +4,9 @@ Everything for the build lives in this codespace: Blender, its server, Claude Co
 and a place for your harness. Your laptop stays outside.
 
 - `bash smoke.sh` tells you whether the codespace is ready.
-- Blender's window opens inside the editor on its own (port 6080). If the panel is blank or asks to
-  connect: Ports tab, right-click 6080, Preview in Editor; password vscode.
+- `viewport.png` is Blender's live view: it opens in the middle at start and redraws every two
+  seconds. Closed it? Click it in the explorer. Blender's real window is on port 6080 (Ports tab,
+  right-click, Preview in Editor; password vscode) when you want to play the animation.
 - Claude Code lives in the right-hand sidebar, already signed in to the course gateway. The terminal
   below is for your harness.
 - `fixtures/` holds the lecture's pelican prompt and your scene brief.

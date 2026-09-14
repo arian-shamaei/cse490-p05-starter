@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 submission/
 scene/*.blend1
+viewport.png
+.viewport.tmp.png
