@@ -8,10 +8,15 @@ VSIX="$HERE/cse490-workspace.vsix"
 [ -f "$VSIX" ] || exit 0
 for base in "$HOME/.vscode-remote/extensions" "$HOME/.vscode-server/extensions"; do
   mkdir -p "$base"
-  python3 - "$VSIX" "$base/cse490.cse490-workspace-0.1.0" <<'PY'
-import os, shutil, sys, zipfile
-vsix, dst = sys.argv[1], sys.argv[2]
-shutil.rmtree(dst, ignore_errors=True); os.makedirs(dst)
+  python3 - "$VSIX" "$base" <<'PY'
+import glob, json, os, shutil, sys, zipfile
+vsix, base = sys.argv[1], sys.argv[2]
+with zipfile.ZipFile(vsix) as z:
+    meta = json.loads(z.read("extension/package.json"))
+dst = os.path.join(base, "%s.%s-%s" % (meta["publisher"], meta["name"], meta["version"]))
+for old in glob.glob(os.path.join(base, "%s.%s-*" % (meta["publisher"], meta["name"]))):
+    shutil.rmtree(old, ignore_errors=True)
+os.makedirs(dst)
 with zipfile.ZipFile(vsix) as z:
     for n in z.namelist():
         if n.startswith("extension/") and not n.endswith("/"):
