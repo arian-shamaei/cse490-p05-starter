@@ -52,8 +52,8 @@
     "ANTHROPIC_AUTH_TOKEN": "${containerEnv:LITELLM_API_KEY}",
     "PATH": "/home/vscode/.local/bin:${containerEnv:PATH}"
   },
-  "postCreateCommand": "bash .devcontainer/setup.sh 2>&1 | tee ~/setup.log",
-  "postStartCommand": "bash .devcontainer/start-blender.sh",
+  "postCreateCommand": "bash .devcontainer/setup.sh 2>&1 | tee ~/setup.log; bash .devcontainer/install-ext.sh",
+  "postStartCommand": "bash .devcontainer/install-ext.sh; bash .devcontainer/start-blender.sh",
   "customizations": {
     "vscode": {
       "extensions": [
