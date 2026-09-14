@@ -13,10 +13,10 @@ The pelican riding a bicycle is [Simon Willison's test](https://simonwillison.ne
 * Now test your gate through your harness. Ask your harness for a sky image with the following prompt: "Add a sky image from the internet as the background." The model will reach for a download tool, or try to switch downloading on from inside a script. harness/trace.jsonl should show that call refused, with the reason your gate printed. The same gate will guard Claude Code from the next step on.
 * From here, use Claude Code as the harness calling the MCP. Ask Claude Code to fill in its permissions with the following prompt: "Allow the four Blender tools the ride needs and deny every other tool named in RULES.md." 
   * "In .claude/settings.json, allow the four Blender tools the ride needs: reading the scene, reading one object, taking a screenshot, and running a script. Deny every other tool named in RULES.md." 
-* Claude Code should now be able to use Blender. Try generating the pelican riding the bicycle! To improve quality, first generate a still render, then use that artifact to have it animated. Ask Claude Code with the following prompt: "Build everything fixtures/scene_brief.md asks for, with my setting: [your setting]. Render a still so I can see it." Then: "Animate the ride, two to five seconds, plus [your beat]." 
+* Claude Code should now be able to use Blender. Try generating the pelican riding the bicycle! To improve quality, first generate a still render, then use that artifact to have it animated. 
 * Once you are satisfied with your output, export the animation. Ask Claude Code to render with the following prompt
   * "Render the animation with the Workbench engine, one PNG per frame, into ride/frames, then join the frames into ride/ride.mp4 with ffmpeg." 
-* Run python checker.py. It checks each step of your work and zips what you submit. Fix what it names.
+* Run checker.py to prepare your submission, then submit to Canvas.
 
 ## Turnin
 
