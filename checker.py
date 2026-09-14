@@ -148,13 +148,47 @@ def video_seconds(path):
         return None
 
 
-def latest_transcript():
-    """Claude Code keeps session transcripts under ~/.claude/projects/<cwd slug>/."""
+def transcripts():
+    """Claude Code writes every session's transcript, as it happens, under
+    ~/.claude/projects/<cwd slug>/<session>.jsonl. All of them are the record: a build
+    that spans a reload or a new chat is several files. Oldest first."""
     slug = re.sub(r"[^A-Za-z0-9]", "-", ROOT)
     cands = glob.glob(os.path.expanduser(f"~/.claude/projects/{slug}/*.jsonl"))
-    if not cands:
-        return None
-    return max(cands, key=os.path.getmtime)
+    return sorted(cands, key=os.path.getmtime)
+
+
+def render_transcript(path):
+    """A readable copy of one Claude Code session: who said what, which tool was
+    called with what, what came back (trimmed). The raw file stays the record."""
+    out = []
+    for line in open(path, encoding="utf-8", errors="replace"):
+        try:
+            e = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        msg = e.get("message") or {}
+        role = e.get("type")
+        if role not in ("user", "assistant") or not isinstance(msg, dict):
+            continue
+        content = msg.get("content")
+        if isinstance(content, str):
+            content = [{"type": "text", "text": content}]
+        for part in content or []:
+            if not isinstance(part, dict):
+                continue
+            kind = part.get("type")
+            if kind == "text" and part.get("text", "").strip():
+                out.append(f"## {role}\n\n{part['text'].strip()}\n")
+            elif kind == "tool_use":
+                args = json.dumps(part.get("input", {}), indent=1)
+                out.append(f"## assistant calls {part.get('name')}\n\n```\n{args[:4000]}\n```\n")
+            elif kind == "tool_result":
+                body = part.get("content")
+                if isinstance(body, list):
+                    body = "\n".join(b.get("text", "") for b in body if isinstance(b, dict))
+                body = str(body or "").strip()
+                out.append(f"## tool result\n\n```\n{body[:2000]}\n```\n")
+    return "\n".join(out)
 
 
 def main():
@@ -244,15 +278,15 @@ def main():
 
     # --- secrets
     leak = []
-    for path in [SETTINGS, MCP_CONFIG, HOOK, HARNESS_CODE, HARNESS_ORIGINAL, HARNESS_TRACE, TRAIL, "AGENTS.md", "CLAUDE.md"]:
+    sessions = transcripts()
+    for path in [SETTINGS, MCP_CONFIG, HOOK, HARNESS_CODE, HARNESS_ORIGINAL, HARNESS_TRACE, TRAIL, "AGENTS.md", "CLAUDE.md"] + sessions:
         if os.path.exists(path) and SECRET.search(open(path, encoding="utf-8", errors="ignore").read()):
-            leak.append(path)
+            leak.append(os.path.relpath(path, os.path.expanduser("~")) if path.startswith(os.path.expanduser("~")) else path)
     check("No key or password in anything you submit", not leak, ", ".join(leak))
 
     # --- bundle
     assemble_timelapse()
     os.makedirs(BUNDLE_DIR, exist_ok=True)
-    transcript = latest_transcript()
     files = [SCENE, RENDER, TRAIL, HARNESS_TRACE, HARNESS_CODE, HARNESS_ORIGINAL, SETTINGS, MCP_CONFIG, HOOK, TIMELAPSE]
     manifest = {
         "written": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
@@ -265,11 +299,14 @@ def main():
             manifest["files"][f] = os.path.exists(f)
             if os.path.exists(f):
                 z.write(f)
-        if transcript:
-            z.write(transcript, "record/claude-code-session.jsonl")
-            manifest["files"]["record/claude-code-session.jsonl"] = True
-        else:
-            manifest["files"]["record/claude-code-session.jsonl"] = False
+        # Claude Code's own transcripts: every session, raw and readable. The harness's
+        # record is harness/trace.jsonl above; the gate's is trail.jsonl.
+        for n, path in enumerate(sessions, 1):
+            name = f"record/claude-code/{n:02d}-{os.path.basename(path)}"
+            z.write(path, name)
+            z.writestr(name[:-len(".jsonl")] + ".md", render_transcript(path))
+            manifest["files"][name] = True
+        manifest["files"]["record/claude-code/"] = bool(sessions)
         for extra in glob.glob("record/*"):
             z.write(extra)
             manifest["files"][extra] = True
