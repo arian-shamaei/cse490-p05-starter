@@ -1,43 +1,16 @@
 #!/usr/bin/env bash
-# One-time setup, run when the codespace is created (postCreateCommand). Blender itself is
-# already in the image (Dockerfile). This installs the MCP for Blender add-on, uv, warms the
-# server, and installs the harness dependencies and Claude Code.
-#
-# The server version is pinned here, in .mcp.json and in harness/MCP_SPEC.md. Change all
-# three or none.
+# Per-codespace setup, run once when the codespace is created (postCreateCommand). Every
+# install - Blender, its server, the desktop, Claude Code, the harness packages - is already
+# in the published image (.devcontainer/Dockerfile, built by .github/workflows/image.yml).
+# What is left is what belongs to this student: the key, the shell profile, Claude Code's
+# first-run answers, the workspace folders.
 set -uo pipefail
-BLENDER_MCP_VERSION="1.9.1"
 export PATH="$HOME/.local/bin:$PATH"
 
 log() { printf '\n== %s\n' "$*"; }
 
-log "uv (runs the MCP for Blender server without a Python install)"
-if ! command -v uvx >/dev/null 2>&1; then
-  curl -LsSf https://astral.sh/uv/install.sh | sh >/dev/null
-fi
-uvx --version
-
-log "warm the server so the first connect in class is not a cold download"
-timeout 120 uvx "blender-mcp==${BLENDER_MCP_VERSION}" --help >/dev/null 2>&1 || true
-
-log "install the add-on into Blender's add-ons folder"
-BV="$(blender --version | head -1 | awk '{print $2}' | cut -d. -f1,2)"   # e.g. 5.2
-ADDONS="$HOME/.config/blender/${BV}/scripts/addons"
-mkdir -p "$ADDONS"
-uvx "blender-mcp==${BLENDER_MCP_VERSION}" install-addon || true
-ls -1 "$ADDONS"
-# The add-on is enabled, with telemetry off, by .devcontainer/enable_addon.py at every
-# Blender launch (start-blender.sh), so nothing depends on saved preferences.
-
-log "harness dependencies"
-pip install --quiet -r requirements.txt
-
-log "Claude Code"
-npm install -g --silent @anthropic-ai/claude-code
-claude --version || true
-# a fixed path for the editor extension, which may not see the node manager's bin folder
-CLAUDE_BIN="$(command -v claude || true)"
-[ -n "$CLAUDE_BIN" ] && sudo ln -sf "$CLAUDE_BIN" /usr/local/bin/claude
+log "what the image brought"
+blender --version | head -1; uvx --version; claude --version || true
 
 log "the course key, kept private inside the container for shells the secret does not reach"
 # Codespaces hands secrets to the editor's terminal and to this setup step, but not to an

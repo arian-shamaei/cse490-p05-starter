@@ -1,18 +1,25 @@
 FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 
-# Blender 5.2 LTS, the release the course pins for students. Pinned here and restated in the
-# course setup checklist; change both or neither.
+# Everything a Project 5 codespace needs, built ONCE by .github/workflows/image.yml and
+# published to the registry. A new codespace pulls this image; nothing below runs at
+# create time. Versions are pinned here and restated in the course setup checklist.
 ARG BLENDER_SERIES=5.2
 ARG BLENDER_VERSION=5.2.1
+ARG BLENDER_MCP_VERSION=1.9.1
+ARG NODE_MAJOR=22
 
 # Runtime libraries the Linux tarball expects from the OS, plus Mesa's software rasterizer
-# (llvmpipe, in libgl1-mesa-dri) so the GUI runs on a machine with no GPU. Blender bundles
-# freetype, png, tiff, openjp2 and sndfile itself. ffmpeg is for the checker's duration probe.
+# (llvmpipe, in libgl1-mesa-dri) so the GUI runs on a machine with no GPU; Python 3.12 from
+# Ubuntu (the dev-container Python feature compiles one from source, three minutes a
+# codespace); Node for Claude Code; ffmpeg for the checker and the ride video.
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       libgl1 libglx-mesa0 libgl1-mesa-dri libegl1 libgles2 libglu1-mesa mesa-utils \
       libx11-6 libxi6 libxxf86vm1 libxfixes3 libxrender1 libxkbcommon0 libxrandr2 libxcursor1 libxinerama1 \
       libsm6 libice6 libdbus-1-3 libpulse0 libgomp1 \
-      ffmpeg xz-utils ca-certificates curl \
+      python3 python3-pip python3-venv \
+      ffmpeg xz-utils ca-certificates curl gnupg \
+ && curl -fsSL https://deb.nodesource.com/setup_${NODE_MAJOR}.x | bash - \
+ && apt-get install -y --no-install-recommends nodejs \
  && rm -rf /var/lib/apt/lists/*
 
 # download.blender.org answers 403 to non-browser clients (instructor play-test, 2026-09-12);
@@ -26,3 +33,20 @@ RUN set -eux; \
     rm /tmp/b.tar.xz; \
     ln -s /opt/blender/blender /usr/local/bin/blender; \
     /opt/blender/blender --version
+
+# Claude Code, at a fixed path for the editor extension
+RUN npm install -g @anthropic-ai/claude-code && ln -sf "$(command -v claude)" /usr/local/bin/claude
+
+# The harness's Python packages (the same file the workspace carries)
+COPY requirements.txt /tmp/requirements.txt
+RUN pip3 install --no-cache-dir --break-system-packages -r /tmp/requirements.txt
+
+# As the codespace user: uv, the MCP for Blender server warmed into uv's cache, and the
+# add-on installed into Blender's add-ons folder. enable_addon.py enables it at every launch.
+USER vscode
+ENV PATH="/home/vscode/.local/bin:${PATH}"
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
+ && timeout 180 uvx "blender-mcp==${BLENDER_MCP_VERSION}" --help >/dev/null 2>&1 || true
+RUN mkdir -p "/home/vscode/.config/blender/${BLENDER_SERIES}/scripts/addons" \
+ && uvx "blender-mcp==${BLENDER_MCP_VERSION}" install-addon || true
+USER root

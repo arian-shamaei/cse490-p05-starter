@@ -1,0 +1,12 @@
+{
+  "name": "CSE 490 Project 5 image build",
+  "build": { "dockerfile": "../Dockerfile", "context": ".." },
+  "features": {
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "password": "vscode",
+      "webPort": "6080",
+      "vncPort": "5901"
+    },
+    "ghcr.io/devcontainers/features/sshd:1": { "version": "latest" }
+  }
+}
