@@ -4,8 +4,8 @@
 //
 // On activation, and on the command "CSE 490: Arrange the workspace":
 //   1. close every editor tab
-//   2. open viewport.png (Blender's live view) in the middle, waiting for the
-//      container to write it if Blender is still starting
+//   2. open ASSIGNMENT.md on the left, focused, and viewport.png (Blender's
+//      live view) beside it, waiting for the container to write it
 //   3. open Claude Code in the right-hand sidebar
 //   4. focus a terminal below
 const vscode = require("vscode");
@@ -54,14 +54,30 @@ async function arrange(output) {
   }
   output.appendLine("claude code panel: " + (claude ? "opened" : "not available"));
 
-  // Blender's live view in the middle, once the container has written it.
+  // The assignment on the left, focused: the answer to "where do I start".
+  const folders = vscode.workspace.workspaceFolders || [];
+  if (folders.length) {
+    const asg = vscode.Uri.joinPath(folders[0].uri, "ASSIGNMENT.md");
+    try {
+      await vscode.workspace.fs.stat(asg);
+      await vscode.commands.executeCommand("vscode.open", asg, { viewColumn: vscode.ViewColumn.One, preview: false });
+      output.appendLine("assignment opened");
+    } catch (e) {
+      output.appendLine("no ASSIGNMENT.md in the workspace");
+    }
+  }
+
+  // Blender's live view beside it, once the container has written it.
   const uri = await findView(90000);
   if (uri) {
-    await vscode.commands.executeCommand("vscode.open", uri, { viewColumn: vscode.ViewColumn.One, preview: false });
+    await vscode.commands.executeCommand("vscode.open", uri, { viewColumn: vscode.ViewColumn.Two, preview: false, preserveFocus: true });
     output.appendLine("live view opened");
   } else {
     output.appendLine("viewport.png not written yet; run the command again later");
   }
+
+  // the explorer, not the extensions view, on the left
+  await tryCommand("workbench.view.explorer");
 
   // The terminal below, for the student's harness.
   if (!vscode.window.terminals.length) {

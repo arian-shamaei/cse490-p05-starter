@@ -77,7 +77,10 @@
         ],
         "chat.disableAIFeatures": true,
         "workbench.secondarySideBar.defaultVisibility": "visible",
-        "workbench.startupEditor": "none"
+        "workbench.startupEditor": "none",
+        "extensions.ignoreRecommendations": true,
+        "update.showReleaseNotes": false,
+        "workbench.tips.enabled": false
       }
     },
     "codespaces": {}
