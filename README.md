@@ -5,10 +5,10 @@ and a place for your harness. You work in it through the same VS Code as week th
 the wizard connects the two. Your laptop runs nothing else.
 
 - `bash smoke.sh` tells you whether the codespace is ready.
-- Every open arranges the screen: `ASSIGNMENT.md` on the left, Blender's live view (`viewport.png`,
-  redrawn every two seconds) beside it, Claude Code on the right, the terminal below. Lost it? F1, then
-  "CSE 490: Arrange the workspace". Blender's real window is on port 6080 (Ports tab, right-click,
-  Preview in Editor; password vscode) when you want to play the animation.
+- Every open arranges the screen: `ASSIGNMENT.md` on the left, Blender's window beside it,
+  Claude Code on the right, the terminal below. Lost it? F1, then "CSE 490: Arrange the
+  workspace". The window is the codespace desktop on port 6080; if the tab is blank, open the
+  Ports tab, right-click 6080, Preview in Editor (password vscode).
 - Claude Code lives in the right-hand sidebar, already signed in to the course gateway. The terminal
   below is for your harness.
 - `fixtures/` holds the lecture's pelican prompt and your scene brief.

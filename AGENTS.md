@@ -32,8 +32,7 @@ student's brief for the scene and the setting they chose.
   range. This Blender build has no video encoder, so after the frames are written, join
   them yourself with the installed ffmpeg into `ride/ride.mp4` (24 frames a second,
   H.264, yuv420p). The checker does the same only if the file is missing.
-- Nothing is written anywhere else: not `/tmp`, not the home directory. `viewport.png` is the
-  student's live view, written by the container; never write or delete it.
+- Nothing is written anywhere else: not `/tmp`, not the home directory.
 
 ## What the student submits from your work
 

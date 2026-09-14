@@ -4,14 +4,15 @@
 //
 // On activation, and on the command "CSE 490: Arrange the workspace":
 //   1. close every editor tab
-//   2. open ASSIGNMENT.md on the left, focused, and viewport.png (Blender's
-//      live view) beside it; if Blender has not written it yet, a file watcher
-//      opens it the moment it appears, however long that takes
+//   2. open ASSIGNMENT.md on the left, focused, and Blender's window beside it:
+//      the codespace desktop on port 6080, shown in the editor's own browser tab
+//      (the wizard made that port public, so the tab needs no sign-in)
 //   3. open Claude Code in the right-hand sidebar
 //   4. focus a terminal below
 const vscode = require("vscode");
 
-const VIEW = "viewport.png";
+const BLENDER_PORT = 6080;
+const BLENDER_PAGE = "vnc.html?autoconnect=true&resize=scale&password=vscode";
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
@@ -26,45 +27,30 @@ async function tryCommand(id, ...args) {
   }
 }
 
-async function exists(uri) {
+// Blender's window beside the assignment. asExternalUri forwards the port and
+// returns its address on this codespace; the built-in Simple Browser shows it
+// as an editor tab. If that tab cannot open, the address goes to the system browser.
+async function showBlender(output) {
+  let base;
   try {
-    await vscode.workspace.fs.stat(uri);
-    return true;
+    base = await vscode.env.asExternalUri(vscode.Uri.parse("http://localhost:" + BLENDER_PORT + "/"));
   } catch (e) {
-    return false;
-  }
-}
-
-async function openView(uri, output) {
-  await vscode.commands.executeCommand("vscode.open", uri, { viewColumn: vscode.ViewColumn.Two, preview: false, preserveFocus: true });
-  output.appendLine("live view opened");
-}
-
-let watcher = null;
-
-// Open the live view beside the assignment: now if Blender has written it,
-// otherwise the first time it appears (Blender takes a while on a cold start).
-async function showView(output, context) {
-  const folders = vscode.workspace.workspaceFolders || [];
-  if (!folders.length) return;
-  const uri = vscode.Uri.joinPath(folders[0].uri, VIEW);
-  if (await exists(uri)) {
-    await openView(uri, output);
+    output.appendLine("port " + BLENDER_PORT + " could not be forwarded: " + e);
     return;
   }
-  output.appendLine("viewport.png not written yet; watching for it");
-  if (watcher) return;
-  watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(folders[0], VIEW), false, true, true);
-  context.subscriptions.push(watcher);
-  watcher.onDidCreate(async () => {
-    watcher.dispose();
-    watcher = null;
-    await openView(uri, output);
-    await tryCommand("workbench.action.terminal.focus");
+  const url = base.toString(true).replace(/\/?$/, "/") + BLENDER_PAGE;
+  output.appendLine("blender window at " + base.toString(true));
+  const inEditor = await tryCommand("simpleBrowser.api.open", vscode.Uri.parse(url), {
+    viewColumn: vscode.ViewColumn.Two,
+    preserveFocus: true,
   });
+  if (!inEditor) {
+    output.appendLine("no browser tab in this editor; opening the system browser");
+    await vscode.env.openExternal(vscode.Uri.parse(url));
+  }
 }
 
-async function arrange(output, context) {
+async function arrange(output) {
   output.appendLine(new Date().toISOString() + " arranging the workspace");
   await tryCommand("workbench.action.closeAllEditors");
 
@@ -90,8 +76,8 @@ async function arrange(output, context) {
     }
   }
 
-  // Blender's live view beside it.
-  await showView(output, context);
+  // Blender's window beside it.
+  await showBlender(output);
 
   // the explorer, not the extensions view, on the left
   await tryCommand("workbench.view.explorer");
@@ -110,12 +96,12 @@ function activate(context) {
   const output = vscode.window.createOutputChannel("CSE 490 workspace");
   context.subscriptions.push(output);
   context.subscriptions.push(
-    vscode.commands.registerCommand("cse490.layout", () => arrange(output, context))
+    vscode.commands.registerCommand("cse490.layout", () => arrange(output))
   );
   if (!arranged) {
     arranged = true;
     // let the workbench finish restoring its own state before rearranging it
-    setTimeout(() => arrange(output, context).catch((e) => output.appendLine("error: " + e)), 2500);
+    setTimeout(() => arrange(output).catch((e) => output.appendLine("error: " + e)), 2500);
   }
 }
 

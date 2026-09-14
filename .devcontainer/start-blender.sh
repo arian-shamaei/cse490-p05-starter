@@ -3,8 +3,8 @@
 # (postStartCommand), and waits for the MCP server socket. Run it by hand if the
 # smoke test says the server is not listening:  bash .devcontainer/start-blender.sh
 #
-# See the window: the Blender window port (6080) opens on its own; if it does not,
-# open the Ports tab in VS Code and click the globe next to 6080. Password: vscode.
+# See the window: the editor opens port 6080 in a tab beside the assignment; if it does
+# not, open the Ports tab in VS Code and click the globe next to 6080. Password: vscode.
 set -uo pipefail
 export DISPLAY="${DISPLAY:-:1}"
 export LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe
@@ -30,7 +30,6 @@ fi
 for i in $(seq 1 120); do
   if (exec 3<>/dev/tcp/127.0.0.1/9876) 2>/dev/null; then
     echo "Blender server listening on localhost:9876 after ${i}s"
-    echo "Blender writes viewport.png in the workspace every two seconds (enable_addon.py)."
     exit 0
   fi
   sleep 1

@@ -11,7 +11,7 @@
   ],
   "portsAttributes": {
     "6080": {
-      "label": "Blender desktop (fallback)",
+      "label": "Blender window",
       "onAutoForward": "silent"
     }
   },
