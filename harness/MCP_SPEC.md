@@ -25,6 +25,11 @@ tool dict.
   hand the result text back to the model as the tool result, the same way the
   harness already does for its own tools.
 
+- Keep the whole run inside one async context: start the server, open the session,
+  and run every turn within it. Entering the client and the session by hand from a
+  separate loop closes the transport on the first call (a first-try failure seen in
+  the dry run).
+
 ## The gate stays in front of every call
 
 The week-three gate runs before any tool call, server tools included. Extend it

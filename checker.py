@@ -96,6 +96,27 @@ def blend_probe():
     return None, "Blender ran but the probe printed nothing"
 
 
+FRAMES = "renders/frames"
+
+
+def assemble_video():
+    """This Blender build cannot write video, so the agent renders PNG frames and
+    the checker joins them into renders/ride.mp4 with the container's ffmpeg (a GIF
+    fallback when ffmpeg is missing). Fresh frames always rebuild the file."""
+    frames = sorted(glob.glob(os.path.join(FRAMES, "*.png")))
+    if not frames:
+        return
+    newest = max(os.path.getmtime(f) for f in frames)
+    if os.path.exists(RENDER) and os.path.getmtime(RENDER) >= newest:
+        return
+    os.makedirs(os.path.dirname(RENDER), exist_ok=True)
+    ffmpeg = shutil.which("ffmpeg")
+    if ffmpeg:
+        subprocess.run([ffmpeg, "-y", "-loglevel", "error", "-framerate", "24", "-pattern_type", "glob",
+                        "-i", os.path.join(FRAMES, "*.png"), "-c:v", "libx264", "-pix_fmt", "yuv420p", RENDER],
+                       capture_output=True, text=True)
+
+
 def video_seconds(path):
     ffprobe = shutil.which("ffprobe")
     if not ffprobe or not os.path.exists(path):
@@ -152,9 +173,12 @@ def main():
         check("The render engine is Workbench", False, why)
 
     # --- the render
+    assemble_video()
     secs = video_seconds(RENDER)
+    nframes = len(glob.glob(os.path.join(FRAMES, "*.png")))
     check("The rendered animation exists and runs at least two seconds",
-          secs is not None and secs >= 2.0, f"{secs} s" if secs is not None else "no " + RENDER)
+          secs is not None and secs >= 2.0,
+          f"{secs} s from {nframes} frames" if secs is not None else ("no frames in " + FRAMES if not nframes else "frames present, video not assembled"))
 
     # --- Claude Code's gate
     trail = jsonl(TRAIL)

@@ -18,14 +18,14 @@ Then give the ride one extra beat of motion that is yours: a wobble, a jump, a w
 ## Instructions
 
 - Open your codespace in VS Code, the wizard's last step. Blender is running inside it, its view in the middle of the editor. Nothing is talking to it yet. Who gets to?
-- Your harness first. Hand Claude Code the protocol spec in your workspace so your week-three harness learns the wire, then ask your harness for a sphere above the default cube. Watch it appear in Blender. Who wrote the Python?
-- The model did, and the server ran it as handed. Give your harness a gate: on every call, refuse the server's download tools and any script that reaches outside your workspace, judged by what the script does. Then ask for a sky image from the web. Did the gate say no?
+- Your harness first, and its gate before its wire. Your week-three gate checks a path; the server's tools carry none, so left alone it refuses everything while the model still reports success. Rewrite it to refuse the server's download tools and any script that reaches outside your workspace, reading what the script does, not just the tool's name. What will you look at to know it worked?
+- The trace, not the summary. Hand Claude Code the protocol spec in your workspace so your harness learns the wire, then ask your harness for a sphere above the default cube. Watch it appear in Blender. Now ask for a sky image from the web. Did the gate say no?
 - Now the ride, in Claude Code. Pick your setting and ask for the scene: the pelican, the bicycle, the setting, materials, a light, and a camera that frames the ride. One object per ask. Does the camera see everything?
 - Ask for the motion: the wheels or the legs turn, the bicycle moves forward, two to five seconds, plus your extra beat. Play it in Blender. Does the pelican ride?
 - Before you render, read the scene brief in your workspace, the note your agent read first. Something in it is not yours. What would an agent with no rules have done?
 - Write the rules for Claude Code: which of the server's tools it may call, which it may never call, and one hook that stops a script from reaching outside your workspace. Safe mode is already on; your rules are the second gate. Will they hold?
 - Find out, in the codespace. With your rules in place, ask your agent to finish what the brief asks for. Check the audit trail your hook wrote. Did the gate say no? If your agent never took the bait, ask for the forbidden thing outright.
-- Rules still on, ask for the render on Blender's preview engine, Workbench, to a video file. Did the legitimate work go through?
+- Rules still on, ask for the render on Blender's preview engine, Workbench, frame by frame; the checker joins the frames into a video. Did it go through? Can you watch it?
 - Run the workspace's checker. It tells you which of the promises above hold and which don't yet, and writes your submission bundle.
 
 ## Turnin
