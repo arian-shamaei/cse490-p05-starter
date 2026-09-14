@@ -35,6 +35,9 @@ pip install --quiet -r requirements.txt
 log "Claude Code"
 npm install -g --silent @anthropic-ai/claude-code
 claude --version || true
+# a fixed path for the editor extension, which may not see the node manager's bin folder
+CLAUDE_BIN="$(command -v claude || true)"
+[ -n "$CLAUDE_BIN" ] && sudo ln -sf "$CLAUDE_BIN" /usr/local/bin/claude
 
 log "the course key, kept private inside the container for shells the secret does not reach"
 # Codespaces hands secrets to the editor's terminal and to this setup step, but not to an
