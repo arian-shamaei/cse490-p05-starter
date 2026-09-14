@@ -1,18 +1,19 @@
 {
   "name": "CSE 490 Project 5: Blender over MCP",
-  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "build": { "dockerfile": "Dockerfile" },
   "hostRequirements": { "cpus": 2, "memory": "8gb", "storage": "32gb" },
   "features": {
+    "ghcr.io/devcontainers/features/python:1": { "version": "3.12" },
     "ghcr.io/devcontainers/features/node:1": { "version": "22" },
     "ghcr.io/devcontainers/features/desktop-lite:1": {
-      "password": "noPassword",
+      "password": "vscode",
       "webPort": "6080",
       "vncPort": "5901"
     }
   },
   "forwardPorts": [6080],
   "portsAttributes": {
-    "6080": { "label": "Blender window", "onAutoForward": "openBrowser" }
+    "6080": { "label": "Blender window", "onAutoForward": "openPreview" }
   },
   "secrets": {
     "LITELLM_API_KEY": {
@@ -25,14 +26,15 @@
     "ANTHROPIC_MODEL": "claude-sonnet-5",
     "BLENDER_MCP_SAFE_MODE": "1",
     "BLENDER_MCP_DISABLE_TELEMETRY": "true",
+    "DISPLAY": ":1",
     "LIBGL_ALWAYS_SOFTWARE": "1",
-    "DISPLAY": ":1"
+    "GALLIUM_DRIVER": "llvmpipe"
   },
   "remoteEnv": {
     "ANTHROPIC_AUTH_TOKEN": "${containerEnv:LITELLM_API_KEY}",
     "PATH": "/home/vscode/.local/bin:${containerEnv:PATH}"
   },
-  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postCreateCommand": "bash .devcontainer/setup.sh 2>&1 | tee ~/setup.log",
   "postStartCommand": "bash .devcontainer/start-blender.sh",
   "customizations": {
     "vscode": {

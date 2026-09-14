@@ -40,6 +40,7 @@ DENY_TARGETS = [
     "download_sketchfab_model",
     "generate_hyper3d_model_via_text",
     "generate_hyper3d_model_via_images",
+    "generate_hunyuan3d_model",
     "import_generated_asset",
 ]
 DOWNLOAD_WORDS = ("polyhaven", "sketchfab", "hyper3d", "rodin", "download", "urlopen", "requests.get", "httpx")

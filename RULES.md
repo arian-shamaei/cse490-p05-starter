@@ -24,6 +24,7 @@ Code names them (server `blender`, version 1.9.1):
     mcp__blender__get_hyper3d_status
     mcp__blender__generate_hyper3d_model_via_text
     mcp__blender__generate_hyper3d_model_via_images
+    mcp__blender__generate_hunyuan3d_model
     mcp__blender__poll_rodin_job_status
     mcp__blender__import_generated_asset
 

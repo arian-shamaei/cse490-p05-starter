@@ -4,7 +4,7 @@ Everything for the build lives in this codespace: Blender, its server, Claude Co
 and a place for your harness. Your laptop stays outside.
 
 - `bash smoke.sh` tells you whether the codespace is ready.
-- The Blender window is a browser tab (port 6080). It starts on its own.
+- The Blender window is a browser tab (port 6080, password vscode). It starts on its own.
 - `fixtures/` holds the lecture's pelican prompt and your scene brief.
 - `harness/` is where your week-three harness goes; `harness/MCP_SPEC.md` is what
   you hand Claude Code.
