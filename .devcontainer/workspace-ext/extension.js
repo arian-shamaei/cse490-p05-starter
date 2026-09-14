@@ -5,7 +5,8 @@
 // On activation, and on the command "CSE 490: Arrange the workspace":
 //   1. close every editor tab
 //   2. open ASSIGNMENT.md on the left, focused, and viewport.png (Blender's
-//      live view) beside it, waiting for the container to write it
+//      live view) beside it; if Blender has not written it yet, a file watcher
+//      opens it the moment it appears, however long that takes
 //   3. open Claude Code in the right-hand sidebar
 //   4. focus a terminal below
 const vscode = require("vscode");
@@ -25,23 +26,45 @@ async function tryCommand(id, ...args) {
   }
 }
 
-async function findView(maxWaitMs) {
-  const folders = vscode.workspace.workspaceFolders || [];
-  if (!folders.length) return null;
-  const uri = vscode.Uri.joinPath(folders[0].uri, VIEW);
-  const deadline = Date.now() + maxWaitMs;
-  while (Date.now() < deadline) {
-    try {
-      await vscode.workspace.fs.stat(uri);
-      return uri;
-    } catch (e) {
-      await sleep(2000);
-    }
+async function exists(uri) {
+  try {
+    await vscode.workspace.fs.stat(uri);
+    return true;
+  } catch (e) {
+    return false;
   }
-  return null;
 }
 
-async function arrange(output) {
+async function openView(uri, output) {
+  await vscode.commands.executeCommand("vscode.open", uri, { viewColumn: vscode.ViewColumn.Two, preview: false, preserveFocus: true });
+  output.appendLine("live view opened");
+}
+
+let watcher = null;
+
+// Open the live view beside the assignment: now if Blender has written it,
+// otherwise the first time it appears (Blender takes a while on a cold start).
+async function showView(output, context) {
+  const folders = vscode.workspace.workspaceFolders || [];
+  if (!folders.length) return;
+  const uri = vscode.Uri.joinPath(folders[0].uri, VIEW);
+  if (await exists(uri)) {
+    await openView(uri, output);
+    return;
+  }
+  output.appendLine("viewport.png not written yet; watching for it");
+  if (watcher) return;
+  watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(folders[0], VIEW), false, true, true);
+  context.subscriptions.push(watcher);
+  watcher.onDidCreate(async () => {
+    watcher.dispose();
+    watcher = null;
+    await openView(uri, output);
+    await tryCommand("workbench.action.terminal.focus");
+  });
+}
+
+async function arrange(output, context) {
   output.appendLine(new Date().toISOString() + " arranging the workspace");
   await tryCommand("workbench.action.closeAllEditors");
 
@@ -67,14 +90,8 @@ async function arrange(output) {
     }
   }
 
-  // Blender's live view beside it, once the container has written it.
-  const uri = await findView(90000);
-  if (uri) {
-    await vscode.commands.executeCommand("vscode.open", uri, { viewColumn: vscode.ViewColumn.Two, preview: false, preserveFocus: true });
-    output.appendLine("live view opened");
-  } else {
-    output.appendLine("viewport.png not written yet; run the command again later");
-  }
+  // Blender's live view beside it.
+  await showView(output, context);
 
   // the explorer, not the extensions view, on the left
   await tryCommand("workbench.view.explorer");
@@ -93,12 +110,12 @@ function activate(context) {
   const output = vscode.window.createOutputChannel("CSE 490 workspace");
   context.subscriptions.push(output);
   context.subscriptions.push(
-    vscode.commands.registerCommand("cse490.layout", () => arrange(output))
+    vscode.commands.registerCommand("cse490.layout", () => arrange(output, context))
   );
   if (!arranged) {
     arranged = true;
     // let the workbench finish restoring its own state before rearranging it
-    setTimeout(() => arrange(output).catch((e) => output.appendLine("error: " + e)), 2500);
+    setTimeout(() => arrange(output, context).catch((e) => output.appendLine("error: " + e)), 2500);
   }
 }
 

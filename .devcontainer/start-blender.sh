@@ -30,11 +30,7 @@ fi
 for i in $(seq 1 120); do
   if (exec 3<>/dev/tcp/127.0.0.1/9876) 2>/dev/null; then
     echo "Blender server listening on localhost:9876 after ${i}s"
-    # the live view: viewport.png in the workspace, refreshed every two seconds
-    if ! pgrep -f "^python3 .*viewport_loop.py" >/dev/null 2>&1; then
-      setsid nohup python3 "$HERE/viewport_loop.py" >/tmp/viewport.log 2>&1 < /dev/null &
-      echo "viewport.png is being refreshed (log: /tmp/viewport.log)"
-    fi
+    echo "Blender writes viewport.png in the workspace every two seconds (enable_addon.py)."
     exit 0
   fi
   sleep 1
