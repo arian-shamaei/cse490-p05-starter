@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Six checks that the codespace is ready for the build. Run: bash smoke.sh
+# Eight checks that the codespace is ready for the build. Run: bash smoke.sh
 export PATH="$HOME/.local/bin:$PATH"
 # an SSH session does not receive Codespaces secrets; the setup step kept a private copy
 [ -z "${LITELLM_API_KEY:-}" ] && [ -r "$HOME/.config/cse490/key" ] && export LITELLM_API_KEY="$(cat "$HOME/.config/cse490/key")"
@@ -32,6 +32,8 @@ if [ -n "${LITELLM_API_KEY:-}" ]; then pass "course key present as a secret"; el
 
 code=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer ${LITELLM_API_KEY:-none}" "${LITELLM_BASE_URL:-https://litellm-test.cs.washington.edu}/v1/models")
 [ "$code" = "200" ] && pass "gateway answers to your key" || fail "gateway (HTTP $code)"
+
+[ -n "${HARNESS_MODEL:-}" ] && pass "harness model $HARNESS_MODEL" || fail "HARNESS_MODEL (set by the codespace)"
 
 command -v claude >/dev/null 2>&1 && pass "claude code $(claude --version 2>/dev/null | head -1)" || fail "claude code (npm install -g @anthropic-ai/claude-code)"
 

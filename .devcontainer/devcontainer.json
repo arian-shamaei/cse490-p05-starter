@@ -46,7 +46,8 @@
     "BLENDER_MCP_DISABLE_TELEMETRY": "true",
     "DISPLAY": ":1",
     "LIBGL_ALWAYS_SOFTWARE": "1",
-    "GALLIUM_DRIVER": "llvmpipe"
+    "GALLIUM_DRIVER": "llvmpipe",
+    "HARNESS_MODEL": "openrouter/deepseek-v4-flash-0731"
   },
   "remoteEnv": {
     "ANTHROPIC_AUTH_TOKEN": "${containerEnv:LITELLM_API_KEY}",
